@@ -222,7 +222,7 @@ byte g_VelArray[PROFILE_LEN]={129,132,134,136,137,139,140,141,142,143,143,144,14
 
 stMcuMngr g_stMcuMngr;
 
-byte FD,FU,AD,AU,FDFB,FUFB,ADFB,AUFB,SW2,SW2FB,TSTFB,RST,LED_status,USR_status,blueOn, calibON, numBlinkFreq, state , SW2_pressed,TST_pressed,menu_state;
+byte FD,FU,AD,AU,FDFB,FUFB,ADFB,AUFB,SW2,SW2FB,TSTFB,RST,LED_status,USR_status,blueOn, calibON, numBlinkFreq, SW2_pressed,TST_pressed,menu_state;
 int A_pot,prevA_pot, A_current, Compression_perc=80, prev_Compression_perc, A_rate, A_comp, A_pres;
 int motorPWM,index=0, prev_index,i, wait_cycles,cycle_number, cycles_lost,index_last_motion;
 
@@ -472,8 +472,8 @@ void display_menu()
 void exit_menu()
 {
   SW2FB=0;
-  last_TST_not_pressed=millis();
-  state=0;
+  last_TST_not_pressed= millis();
+  g_stMcuMngr.m_NextState = eState_Standby;
   index=0;
   calibON = 0; 
   display_LCD();
@@ -719,7 +719,7 @@ void calibrate_pot_range()   // used for calibaration of potentiometers
 void display_LCD()   // here function that sends data to LCD
 { if (IS_LCD_AVAILABLE) 
   {
-  if (calibON==0 && state!=2) 
+  if (calibON==0 && g_stMcuMngr.m_CurrState!= eState_Operating) 
     {
     g_Lcd.clear();
     g_Lcd.setCursor(0, 0);   g_Lcd.print("BPM:");   g_Lcd.print(byte(BPM));  
